@@ -13,11 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4  # Use v4 or a later version
-        with:
-          node-version: 16  # Specify Node.js version 16 or a later version
-
       - name: Deploy to server
         run: |
           ssh root@194.58.34.53 -p 24163 "cd /home/insta_server && git pull origin main && npm install && npm run build && pm2 restart insta_server"
