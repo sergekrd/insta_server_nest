@@ -3,11 +3,13 @@ import { InstaLogin } from '../services/login.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { CheckPointCode, Executedto, LogIn } from '../types/types';
 import { InstancesService } from '../services/instances.service';
+import { ExecuteService } from '../services/execute.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly instaLogin: InstaLogin,
+    private readonly excuteService: ExecuteService,
     @Inject(InstancesService) private instances: InstancesService,
   ) {}
 
@@ -41,8 +43,9 @@ export class AppController {
 
   @Post('/execute')
   async execute(@Body() ctx: Executedto): Promise<void | string> {
-  app.post('/api/doinsta', async function (req, res) {
-    console.log('receiving data ...');
-   
-});
+    const { client } = this.instances.getInstance(ctx.username);
+    const responseData = await this.excuteService.run(client, ctx);
+    this.instances.setInstance(ctx.username, client);
+    return responseData;
+  }
 }

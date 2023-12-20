@@ -48,7 +48,8 @@ export class CookiesService {
       return false;
     }
     console.log(`${username}: кукиз есть`);
-    return userWithCookies.cookies;
+    const cookies = JSON.parse(userWithCookies.cookies.cookie);
+    return cookies;
   }
 
   async getUserId(username: string) {

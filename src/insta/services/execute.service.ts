@@ -6,13 +6,13 @@ import { CookiesService } from './cookies.service';
 @Injectable()
 export class ExecuteService {
   constructor(private readonly cookiesService: CookiesService) {}
-  public async run(executeData: Executedto, ig: IgApiClient) {
+  public async run(ig: IgApiClient, executeData: Executedto) {
     {
       try {
-        const { rFunction, username, arg } = executeData;
-        const myFunction = eval(`(${rFunction})`);
+        const { functionString, username, args } = executeData;
+        const myFunction = eval(`(${functionString})`);
         if (typeof myFunction === 'function') {
-          const result = await myFunction(ig, arg);
+          const result = await myFunction(ig, args);
           const json = JSON.stringify(result, null, 4);
           await this.cookiesService.saveSession(ig, username);
           return json;

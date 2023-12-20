@@ -19,12 +19,13 @@ export type LoginResult = {
 };
 
 export type CheckPointCode = {
-  code: number;
   username: string;
+  code: number;
+  args: any;
 };
 
 export type Executedto = {
-  rFunction: string;
+  functionString: string;
   username: string;
-  arg: any;
+  args: any;
 };

@@ -37,6 +37,7 @@ export class InstaLogin {
         if (result?.message) {
           return result;
         } else {
+          console.log('Вход осуществлен');
           await this.cookiesService.saveSession(result.client, username);
           return { username, client: result.client };
         }
@@ -47,9 +48,10 @@ export class InstaLogin {
     }
   }
 
-  async tryLoadSession(ig, username): Promise<boolean> {
+  async tryLoadSession(ig: IgApiClient, username: string): Promise<boolean> {
     try {
       const cookies = await this.cookiesService.loadSession(username);
+      if (!cookies) return false;
       await ig.state.deserialize(cookies);
       await ig.feed.directInbox().items();
       return true;
@@ -62,12 +64,13 @@ export class InstaLogin {
   async auth(ig: IgApiClient, username, password) {
     try {
       await ig.simulate.preLoginFlow();
-      await ig.account.login(username, password);
+      const loggedInUser = await ig.account.login(username, password);
       process.nextTick(async () => {
         const t = ig.simulate.postLoginFlow();
         await t;
       });
       await ig.feed.directInbox().items();
+      await this.userService.updateUserPk(username, loggedInUser.pk);
       await this.cookiesService.saveSession(ig, username);
       return { username, client: ig };
     } catch (e) {

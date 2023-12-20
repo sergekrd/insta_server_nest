@@ -14,6 +14,7 @@ model accounts {
   id           String   @id @default(uuid()) @db.Uuid
   username     String   @unique @db.VarChar(255)
   password     String   @db.VarChar(255)
+  user_pk      Int      @default(0) @db.Integer
   proxy_string String   @default("") @db.VarChar(255)
   createdAt    DateTime @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime @updatedAt @db.Timestamptz(6)
