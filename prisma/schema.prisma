@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model accounts {
+  id           String   @id @default(uuid()) @db.Uuid
+  username     String   @unique @db.VarChar(255)
+  password     String   @db.VarChar(255)
+  proxy_string String   @default("") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  cookies      cookies?
+}
+
+model cookies {
+  id        String   @id @default(uuid()) @db.Uuid
+  account   String   @unique @db.Uuid
+  cookie    String   @db.VarChar
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  accounts  accounts @relation(fields: [account], references: [id], onDelete: Cascade)
+}
