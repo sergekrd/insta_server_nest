@@ -19,6 +19,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - name: Deploy to server
-        run: ssh -p 24163 root@194.58.34.53 "cd /home/insta_server && git pull origin main && npm install --dev && npm run build && pm2 restart insta_server"
+        run: |
+          echo "Starting deployment..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 24163 root@194.58.34.53 "cd /home/insta_server && git pull origin main && npm install --dev && npm run build && pm2 restart insta_server"
+          echo "Deployment completed."
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
