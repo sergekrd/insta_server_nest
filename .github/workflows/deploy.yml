@@ -14,6 +14,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy to server
-        run: ssh root@194.58.34.53 -p 24163 "cd /home/insta_server && git pull origin main && npm install && npm run build && pm2 restart insta_server"
+        run: ssh -p 24163 root@194.58.34.53 "cd /home/insta_server && git pull origin main && npm install && npm run build && pm2 restart insta_server"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
