@@ -11,6 +11,7 @@ export class ExecuteService {
       try {
         const { functionString, username, args } = executeData;
         const myFunction = eval(`(${functionString})`);
+
         if (typeof myFunction === 'function') {
           const result = await myFunction(ig, args);
           const json = JSON.stringify(result, null, 4);
