@@ -12,6 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - name: Deploy to server
         run: ssh -p 24163 root@194.58.34.53 "cd /home/insta_server && git pull origin main && npm install --dev && npm run build && pm2 restart insta_server"
         env:
