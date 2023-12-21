@@ -15,6 +15,7 @@ export class ExecuteService {
         if (typeof myFunction === 'function') {
           const result = await myFunction(ig, args);
           const json = JSON.stringify(result, null, 4);
+
           await this.cookiesService.saveSession(ig, username);
           return json;
         } else {
