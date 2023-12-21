@@ -18,7 +18,6 @@ export class InstaLogin {
     try {
       const { username, password, proxyString } = ctx;
       await this.userService.saveUser(username, password);
-
       const ig = new IgApiClient();
       ig.state.generateDevice(username);
       if (proxyString == '') {
