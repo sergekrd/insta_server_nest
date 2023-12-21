@@ -21,7 +21,6 @@ export class InstaLogin {
 
       const ig = new IgApiClient();
       ig.state.generateDevice(username);
-
       if (proxyString == '') {
       } else {
         ig.state.proxyUrl = proxyString;
