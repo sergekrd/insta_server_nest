@@ -7,18 +7,18 @@ git clone <URL репозитория>
 cd <название проекта>
 
 Установите зависимости:
-```npm install
+`npm install
 # или
-yarn install```
+yarn install`
 
 Запустите проект:
-```npm run start
+`npm run start
 # или
-yarn start```
+yarn start`
 
 в env файле пропишите строку подключения к postgres.
 мигрируйте таблицы
-```npx prisma migrate dev```
+`npx prisma migrate dev`
 
 Маршруты API
 Авторизация (/login)
@@ -46,9 +46,9 @@ code (string): Код безопасности для подтверждения
 Тело запроса
 Ожидается JSON-объект с данными, соответствующими требованиям in***am-private-api для выполнения действий.
 
-```const body = { function: insta.getMediaLikers.toString(), username: **autorized_username**, args };```
+`const body = { function: insta.getMediaLikers.toString(), username: **autorized_username**, args };`
 
- ``` getMediaInfo = async (ig: IgApiClient, args: any): Promise<MediaInfoResponseRootObject> => {
+ ` getMediaInfo = async (ig: IgApiClient, args: any): Promise<MediaInfoResponseRootObject> => {
     try {
       const { mediaId } = args;
       const result = await ig.media.info(mediaId);
@@ -57,7 +57,7 @@ code (string): Код безопасности для подтверждения
       throw e;
     }
   };
-  ```
+  `
 
 Общая информация
 Проект создан для ознакомления с возможностями in***am-private-api. Так как запрещенная сеть не приветствует частые авторизации, этот сервис создает и хранит сессии для последующего использования.
