@@ -46,7 +46,8 @@ code (string): Код безопасности для подтверждения
 
 `const body = { function: insta.getMediaLikers.toString(), username: **autorized_username**, args };`
 
- ` getMediaInfo = async (ig: IgApiClient, args: any): Promise<MediaInfoResponseRootObject> => {
+```
+ getMediaInfo = async (ig: IgApiClient, args: any): Promise<MediaInfoResponseRootObject> => {
     try {
       const { mediaId } = args;
       const result = await ig.media.info(mediaId);
@@ -55,7 +56,7 @@ code (string): Код безопасности для подтверждения
       throw e;
     }
   };
-  `
+```
 
 Общая информация
 Проект создан для ознакомления с возможностями in***am-private-api. Так как запрещенная сеть не приветствует частые авторизации, этот сервис создает и хранит сессии для последующего использования.
