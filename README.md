@@ -7,18 +7,14 @@ git clone <URL репозитория>
 cd <название проекта>
 
 Установите зависимости:
-`npm install
-# или
-yarn install`
-
-Запустите проект:
-`npm run start
-# или
-yarn start`
+`npm install`
 
 в env файле пропишите строку подключения к postgres.
 мигрируйте таблицы
 `npx prisma migrate dev`
+
+Запустите проект:
+`npm run start`
 
 Маршруты API
 Авторизация (/login)
