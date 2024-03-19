@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { LogIn, LoginResult } from '../types/types';
 import {
   IgApiClient,
@@ -10,6 +10,7 @@ import { CookiesService } from './cookies.service';
 
 @Injectable()
 export class InstaLogin {
+  private readonly logger = new Logger(InstaLogin.name);
   constructor(
     private readonly userService: UsersService,
     private readonly cookiesService: CookiesService,
@@ -22,30 +23,30 @@ export class InstaLogin {
       const ig = new IgApiClient();
       ig.state.generateDevice(username);
 
-      if (proxyString == '') {
-      } else {
+      if (proxyString !== '') {
         ig.state.proxyUrl = proxyString;
       }
+
       const sessionLoad = await this.tryLoadSession(ig, username);
       if (sessionLoad) {
-        console.log(username + ' сессия загружена из кукиз');
+        this.logger.log(`${username} сессия загружена из кукиз`);
         await this.cookiesService.saveSession(ig, username);
         return { username, client: ig };
-      }
-
-      if (!sessionLoad) {
-        console.log(`${username} +  сессия не загружена из кукиз`);
+      } else {
         const result = await this.auth(ig, username, password);
         if (result?.message) {
           return result;
         } else {
-          console.log('Вход осуществлен');
+          this.logger.log(`${username} успешный вход`);
           await this.cookiesService.saveSession(result.client, username);
           return { username, client: result.client };
         }
       }
     } catch (error) {
-      console.error('Ошибка авторизации:', error);
+      this.logger.error({
+        message: 'Ошибка авторизации:',
+        error: error.message,
+      });
       throw error;
     }
   }
@@ -57,8 +58,11 @@ export class InstaLogin {
       await ig.state.deserialize(cookies);
       await ig.feed.directInbox().items();
       return true;
-    } catch (e) {
-      console.log('Ошибка в TryLoadSession:', e.message);
+    } catch (error) {
+      this.logger.warn({
+        message: 'Ошибка в TryLoadSession:',
+        error: error.message,
+      });
       return false;
     }
   }
@@ -67,28 +71,26 @@ export class InstaLogin {
     try {
       await ig.simulate.preLoginFlow();
       const loggedInUser = await ig.account.login(username, password);
-      process.nextTick(async () => {
-        const t = ig.simulate.postLoginFlow();
-        await t;
-      });
+      await ig.simulate.postLoginFlow();
       await ig.feed.directInbox().items();
       await this.userService.updateUserPk(username, loggedInUser.pk);
       await this.cookiesService.saveSession(ig, username);
       return { username, client: ig };
-    } catch (e) {
+    } catch (error) {
       switch (true) {
-        case e.constructor === IgCheckpointError: {
-          console.log(ig.state.checkpoint); // Checkpoint info here
-          await ig.challenge.auto(true); // Requesting sms-code or click "It was me" button
-          console.log(ig.state.checkpoint); // Challenge info here
+        case error.constructor === IgCheckpointError: {
+          await ig.challenge.auto(true);
+          this.logger.warn({
+            message: 'Checkpoint',
+            info: ig.state.checkpoint,
+          });
           return { username, client: ig, message: 'check point await' };
         }
-        case e.constructor === IgLoginTwoFactorRequiredError: {
+        case error.constructor === IgLoginTwoFactorRequiredError: {
           return { username, client: ig, message: 'two factor login await' };
         }
         default: {
-          console.log(e);
-          throw e;
+          throw error;
         }
       }
     }
