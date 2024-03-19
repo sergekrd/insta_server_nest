@@ -21,7 +21,7 @@ jobs:
       - name: Deploy to server
         run: |
           echo "Starting deployment..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 24163 root@194.58.34.53 "cd /home/insta_server && git pull origin main && npm install --dev && npm run build && pm2 restart insta_server"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 24163 root@194.58.34.53 "cd /home/insta_server_express && git pull origin main && npm install --dev && npm run build && pm2 restart insta_server"
           echo "Deployment completed."
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
